@@ -23,7 +23,7 @@
     };
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, pwnvim, neovide-direct
-    , rust-overlay, ... }:
+    , cargo2nix, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -31,38 +31,23 @@
           overlays = [
             cargo2nix.overlays.default
             # (import rust-overlay)
-            (import ./cargo-bundle.nix)
-            # (self: super: {
-            #   cargo-bundle = self.rustPlatform.buildRustPackage {
-            #     name = "cargo-bundle";
-            #     pname = "cargo-bundle";
-            #     cargoLock = { lockFile = inputs.cargo-bundle + /Cargo.lock; };
-            #     buildDependencies = [ self.glib ];
-            #     buildInputs = [ self.pkg-config self.libiconv ]
-            #       ++ self.lib.optionals self.stdenv.isDarwin
-            #       (with self.darwin.apple_sdk.frameworks; [
-            #         Security
-            #         CoreGraphics
-            #         CoreVideo
-            #         AppKit
-            #       ]);
-            #     src = inputs.cargo-bundle;
-            #   };
-            # })
-
-            # (self: super: {
-            #   neovide = super.neovide.overrideAttrs (old: {
-            #     postInstall = (if super.stdenv.isDarwin then ''
-            #       mkdir $out/Applications
-            #       cp -r bundle/osx/Neovide.app $out/Applications
-            #       ln -s $out/bin $out/Applications/Neovide.app/Contents/MacOS
-            #     '' else
-            #       old.postInstall);
-            #     nativeBuildInputs = old.nativeBuildInputs
-            #       ++ [ super.cargo-bundle ];
-            #     postBuild = "cargo bundle --release";
-            #   });
-            # })
+            (self: super: {
+              cargo-bundle = self.rustPlatform.buildRustPackage {
+                name = "cargo-bundle";
+                pname = "cargo-bundle";
+                cargoLock = { lockFile = inputs.cargo-bundle + /Cargo.lock; };
+                buildDependencies = [ self.glib ];
+                buildInputs = [ self.pkg-config self.libiconv ]
+                  ++ self.lib.optionals self.stdenv.isDarwin
+                  (with self.darwin.apple_sdk.frameworks; [
+                    Security
+                    CoreGraphics
+                    CoreVideo
+                    AppKit
+                  ]);
+                src = inputs.cargo-bundle;
+              };
+            })
           ];
         };
         rusttoolchain = pkgs.rust-bin.fromRustupToolchainFile neovide-direct
@@ -70,8 +55,9 @@
         cargoToml = (builtins.fromTOML (builtins.readFile
           (builtins.trace neovide-direct (neovide-direct + /Cargo.toml))));
         rustPkgs = pkgs.rustBuilder.makePackageSet {
-          rustVersion = "1.65.0";
+          rustVersion = "1.61.0";
           packageFun = import ./Cargo.nix;
+          workspaceSrc = neovide-direct;
         };
 
       in rec {
