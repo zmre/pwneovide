@@ -1,19 +1,12 @@
 {
   description = "PW's Neovide (pwneovide) with pwnvim";
   inputs = {
-    cargo2nix.url = "github:cargo2nix/cargo2nix/release-0.11.0";
-    flake-utils.follows = "cargo2nix/flake-utils";
-    nixpkgs.follows = "cargo2nix/nixpkgs";
-    # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # flake-utils.url = "github:numtide/flake-utils";
-    neovide-direct.url = "github:neovide/neovide/0.10.3";
-    neovide-direct.flake = false;
-    skia.url = "github:rust-skia/skia/m103-0.51.1";
-    skia.flake = false;
+    flake-utils.url = "github:numtide/flake-utils";
     pwnvim.url = "github:zmre/pwnvim";
     pwnvim.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -22,16 +15,13 @@
       flake = false;
     };
   };
-  outputs = inputs@{ self, nixpkgs, flake-utils, pwnvim, neovide-direct
-    , cargo2nix, rust-overlay, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, pwnvim, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
-            cargo2nix.overlays.default
-            # (import rust-overlay)
-            (self: super: {
+            (self: super: rec {
               cargo-bundle = self.rustPlatform.buildRustPackage {
                 name = "cargo-bundle";
                 pname = "cargo-bundle";
@@ -48,131 +38,90 @@
                 src = inputs.cargo-bundle;
               };
             })
+            (self: super: {
+              # neovide = super.callPackage
+              #   (nixpkgs + /pkgs/applications/editors/neovim/neovide) {
+              #     AppKit = self.darwin.apple_sdk.frameworks.AppKit;
+              #     Security = self.darwin.apple_sdk.frameworks.Security;
+              #     Carbon = self.darwin.apple_sdk.frameworks.Carbon;
+              #     ApplicationServices =
+              #       self.darwin.apple_sdk.frameworks.ApplicationServices;
+              #     rustPlatform = super.rustPlatform // {
+              #       buildRustPackage = args:
+              #         super.rustPlatform.buildRustPackage (args // {
+              #           # Can override args to buildRustPackage here
+              #           postInstall = (if super.stdenv.isDarwin then
+              #             args.postInstall + ''
+              #               mkdir $out/Applications
+              #               pwd
+              #               ls
+              #               echo out: $out
+              #               cp -r ./target/release-tmp/bundle/osx/Neovide.app $out/Applications
+              #             ''
+              #           else
+              #             args.postInstall);
+              #           nativeBuildInputs = args.nativeBuildInputs
+              #             ++ [ self.cargo-bundle ];
+              #           buildInputs = args.buildInputs
+              #             ++ [ pwnvim.packages.${system}.pwnvim ];
+              #           postBuild = ''
+              #             cargo bundle --release
+
+              #             target=${
+              #               super.rust.toRustTargetSpec
+              #               super.stdenv.hostPlatform
+              #             }
+
+              #             releaseDir=target/$target/release
+              #             tmpDir="$releaseDir-tmp";
+
+              #             mkdir -p $tmpDir
+              #             cp -r target/release/bundle $tmpDir/
+              #           '';
+              #         });
+              #     };
+              #   };
+              neovide = super.neovide.overrideAttrs (old: {
+                nativeBuildInputs = old.nativeBuildInputs
+                  ++ [ self.cargo-bundle ];
+                buildInputs = old.buildInputs
+                  ++ [ pwnvim.packages.${system}.pwnvim ];
+                postBuild = (if super.stdenv.isDarwin then ''
+                  cargo bundle --release
+
+                  target=${
+                    super.rust.toRustTargetSpec super.stdenv.hostPlatform
+                  }
+
+                  releaseDir=target/$target/release
+                  tmpDir="$releaseDir-tmp";
+
+                  mkdir -p $tmpDir
+                  cp -r target/release/bundle $tmpDir/
+                '' else
+                  old.postBuild);
+                postInstall = (if super.stdenv.isDarwin then ''
+                  mkdir $out/Applications
+                  pwd
+                  ls
+                  echo out: $out
+                  cp -r ./target/release-tmp/bundle/osx/Neovide.app $out/Applications
+                  # mkdir $out/Applications
+                  # pwd
+                  # ls
+                  # echo out: $out
+                  # cp -r ./target/release/bundle/osx/Neovide.app $out/Applications
+                  # ln -s $out/bin $out/Applications/Neovide.app/Contents/MacOS
+                '' else
+                  old.postInstall);
+              });
+            })
+
           ];
-        };
-        rusttoolchain = pkgs.rust-bin.fromRustupToolchainFile neovide-direct
-          + /rust-toolchain.toml;
-        cargoToml = (builtins.fromTOML (builtins.readFile
-          (builtins.trace neovide-direct (neovide-direct + /Cargo.toml))));
-        rustPkgs = pkgs.rustBuilder.makePackageSet {
-          rustVersion = "1.61.0";
-          packageFun = import ./Cargo.nix;
-          workspaceSrc = neovide-direct;
         };
 
       in rec {
-        packages.pwneovide = (rustPkgs.workspace.neovide { }).bin;
-        packages.pwneovide2 = pkgs.rustPlatform.buildRustPackage rec {
-          pname = "pwneovide";
-          version = cargoToml.package.version;
-          # SKIA_NINJA_COMMAND = "${ninja}/bin/ninja";
-          # SKIA_GN_COMMAND = "${gn}/bin/gn";
-          # LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
-
-          src = builtins.trace neovide-direct (neovide-direct + /.);
-          cargoLock = {
-            lockFile = (neovide-direct + /Cargo.lock);
-            outputHashes = {
-              "glutin-0.26.0" =
-                "sha256-Ie4Jb3wCMZSmF1MUzkLG2TqsLrXXzzi6ATjzCjevZBc=";
-              "nvim-rs-0.5.0" =
-                "sha256-3U0/OSDkJYCihFN7UbxnoIgsHKUQB4FAdYTqBZPT2us=";
-              "winit-0.24.0" =
-                "sha256-p/eAaDVmTHzfZ+0DiBA/9v06Z5o1dXVNoCgWRqC1ed0=";
-              "xkbcommon-dl-0.1.0" =
-                "sha256-ojokJF7ivN8JpXo+JAfX3kUOeXneNek7pzIy8D1n4oU=";
-            };
-          };
-
-          preConfigure = ''
-            unset CC CXX
-          '';
-
-          # test needs a valid fontconfig file
-          # FONTCONFIG_FILE = makeFontsConf { fontDirectories = [ ]; };
-
-          nativeBuildInputs = with pkgs;
-            [
-              cargo-bundle
-              cmake
-              pkg-config
-              makeWrapper
-              python2 # skia-bindings
-              python3 # rust-xcb
-              llvmPackages.clang # skia
-              removeReferencesTo
-            ] ++ lib.optionals stdenv.isDarwin [ xcbuild ];
-
-          doCheck = false;
-
-          buildInputs = with pkgs;
-            [
-              pwnvim.packages.${system}.pwnvim
-              openssl
-              SDL2
-              (fontconfig.overrideAttrs (old: {
-                propagatedBuildInputs = [
-                  #   # skia is not compatible with freetype 2.11.0
-                  (freetype.overrideAttrs (old: rec {
-                    version = "2.10.4";
-                    src = fetchurl {
-                      url =
-                        "mirror://savannah/${old.pname}/${old.pname}-${version}.tar.xz";
-                      sha256 =
-                        "112pyy215chg7f7fmp2l9374chhhpihbh8wgpj5nj6avj3c59a46";
-                    };
-                  }))
-                ];
-              }))
-            ] ++ lib.optionals stdenv.isDarwin
-            (with pkgs.darwin.apple_sdk.frameworks; [
-              Security
-              ApplicationServices
-              Carbon
-              AppKit
-              CoreGraphics
-              CoreFoundation
-              Foundation
-              OpenGL
-              CoreVideo
-              QuartzCore
-            ]);
-
-          postFixup = let
-            libPath = pkgs.lib.makeLibraryPath (with pkgs;
-              [ ] ++ lib.optionals stdenv.isLinux [
-                libglvnd
-                libxkbcommon
-                xorg.libXcursor
-                xorg.libXext
-                xorg.libXrandr
-                xorg.libXi
-              ]); # ++ lib.optionals enableWayland [ wayland ]);
-          in ''
-            # library skia embeds the path to its sources
-            # remove-references-to -t "$SKIA_SOURCE_DIR" \
-              # $out/bin/neovide
-
-            wrapProgram $out/bin/neovide \
-              --prefix LD_LIBRARY_PATH : ${libPath}
-          '';
-
-          postBuild = ''
-            cargo bundle --release
-          '';
-
-          postInstall = pkgs.lib.optionals pkgs.stdenv.isLinux ''
-            for n in 16x16 32x32 48x48 256x256; do
-              install -m444 -D "assets/neovide-$n.png" \
-                "$out/share/icons/hicolor/$n/apps/neovide.png"
-            done
-            install -m444 -Dt $out/share/icons/hicolor/scalable/apps assets/neovide.svg
-            install -m444 -Dt $out/share/applications assets/neovide.desktop
-          '';
-
-          # disallowedReferences = [ SKIA_SOURCE_DIR ];
-
-        };
+        packages.pwneovide = pkgs.neovide;
 
         apps.pwneovide = flake-utils.lib.mkApp {
           drv = packages.pwneovide;
