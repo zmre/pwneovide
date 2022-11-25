@@ -9,11 +9,6 @@
     flake-utils.url = "github:numtide/flake-utils";
     pwnvim.url = "github:zmre/pwnvim";
     pwnvim.inputs.nixpkgs.follows = "nixpkgs";
-
-    cargo-bundle = {
-      url = "github:burtonageo/cargo-bundle";
-      flake = false;
-    };
   };
   outputs = inputs@{ self, nixpkgs, flake-utils, pwnvim, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
@@ -21,97 +16,29 @@
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
-            (self: super: rec {
-              cargo-bundle = self.rustPlatform.buildRustPackage {
-                name = "cargo-bundle";
-                pname = "cargo-bundle";
-                cargoLock = { lockFile = inputs.cargo-bundle + /Cargo.lock; };
-                buildDependencies = [ self.glib ];
-                buildInputs = [ self.pkg-config self.libiconv ]
-                  ++ self.lib.optionals self.stdenv.isDarwin
-                  (with self.darwin.apple_sdk.frameworks; [
-                    Security
-                    CoreGraphics
-                    CoreVideo
-                    AppKit
-                  ]);
-                src = inputs.cargo-bundle;
-              };
-            })
             (self: super: {
-              # neovide = super.callPackage
-              #   (nixpkgs + /pkgs/applications/editors/neovim/neovide) {
-              #     AppKit = self.darwin.apple_sdk.frameworks.AppKit;
-              #     Security = self.darwin.apple_sdk.frameworks.Security;
-              #     Carbon = self.darwin.apple_sdk.frameworks.Carbon;
-              #     ApplicationServices =
-              #       self.darwin.apple_sdk.frameworks.ApplicationServices;
-              #     rustPlatform = super.rustPlatform // {
-              #       buildRustPackage = args:
-              #         super.rustPlatform.buildRustPackage (args // {
-              #           # Can override args to buildRustPackage here
-              #           postInstall = (if super.stdenv.isDarwin then
-              #             args.postInstall + ''
-              #               mkdir $out/Applications
-              #               pwd
-              #               ls
-              #               echo out: $out
-              #               cp -r ./target/release-tmp/bundle/osx/Neovide.app $out/Applications
-              #             ''
-              #           else
-              #             args.postInstall);
-              #           nativeBuildInputs = args.nativeBuildInputs
-              #             ++ [ self.cargo-bundle ];
-              #           buildInputs = args.buildInputs
-              #             ++ [ pwnvim.packages.${system}.pwnvim ];
-              #           postBuild = ''
-              #             cargo bundle --release
-
-              #             target=${
-              #               super.rust.toRustTargetSpec
-              #               super.stdenv.hostPlatform
-              #             }
-
-              #             releaseDir=target/$target/release
-              #             tmpDir="$releaseDir-tmp";
-
-              #             mkdir -p $tmpDir
-              #             cp -r target/release/bundle $tmpDir/
-              #           '';
-              #         });
-              #     };
-              #   };
-              neovide = super.neovide.overrideAttrs (old: {
-                nativeBuildInputs = old.nativeBuildInputs
-                  ++ [ self.cargo-bundle ];
+              neovide = super.neovide.overrideAttrs (old: rec {
+                nativeBuildInputs = old.nativeBuildInputs ++ [ super.gnused ];
                 buildInputs = old.buildInputs
                   ++ [ pwnvim.packages.${system}.pwnvim ];
-                postBuild = (if super.stdenv.isDarwin then ''
-                  cargo bundle --release
-
-                  target=${
-                    super.rust.toRustTargetSpec super.stdenv.hostPlatform
-                  }
-
-                  releaseDir=target/$target/release
-                  tmpDir="$releaseDir-tmp";
-
-                  mkdir -p $tmpDir
-                  cp -r target/release/bundle $tmpDir/
-                '' else
-                  old.postBuild);
+                postFixup =
+                  builtins.replaceStrings [ "--prefix LD_LIBRARY_PATH" ] [
+                    "--set PATH ${
+                      super.lib.makeBinPath buildInputs
+                    } --prefix LD_LIBRARY_PATH"
+                  ] old.postFixup;
+                # Note: need to update Info.plist with updated versions and such; TODO: should
+                # probably automate that with some kind of search/replace instead of copying
                 postInstall = (if super.stdenv.isDarwin then ''
-                  mkdir $out/Applications
-                  pwd
-                  ls
-                  echo out: $out
-                  cp -r ./target/release-tmp/bundle/osx/Neovide.app $out/Applications
-                  # mkdir $out/Applications
-                  # pwd
-                  # ls
-                  # echo out: $out
-                  # cp -r ./target/release/bundle/osx/Neovide.app $out/Applications
-                  # ln -s $out/bin $out/Applications/Neovide.app/Contents/MacOS
+                  mkdir -p $out/Applications/Neovide.app/Contents/Resources
+                  mkdir -p $out/Applications/Neovide.app/Contents/MacOS
+                  cp ${
+                    ./extras/Info.plist
+                  } $out/Applications/Neovide.app/Contents/Info.plist
+                  cp ${
+                    ./extras/Neovide.icns
+                  } $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
+                  ln -s $out/bin/neovide $out/Applications/Neovide.app/Contents/MacOS/neovide
                 '' else
                   old.postInstall);
               });
