@@ -19,13 +19,22 @@
             (self: super: {
               neovide = super.neovide.overrideAttrs (old: rec {
                 nativeBuildInputs = old.nativeBuildInputs ++ [ super.gnused ];
-                buildInputs = old.buildInputs
-                  ++ [ pwnvim.packages.${system}.pwnvim ];
+                buildInputs = old.buildInputs ++ (with super; [
+                  pwnvim.packages.${system}.pwnvim
+                  bat
+                  fd
+                  fzy
+                  git
+                  ripgrep
+                  zsh
+                  zoxide
+                ]);
+                # Addition of /usr/bin is impure and sad, but allows pbcopy/pbpaste on mac
                 postFixup =
                   builtins.replaceStrings [ "--prefix LD_LIBRARY_PATH" ] [
                     "--set PATH ${
                       super.lib.makeBinPath buildInputs
-                    } --prefix LD_LIBRARY_PATH"
+                    }:/usr/bin:/bin --add-flags '--novsync --notabs' --set NEOVIDE_FRAME buttonless --set NEOVIDE_MULTIGRID true --prefix LD_LIBRARY_PATH"
                   ] old.postFixup;
                 # Note: need to update Info.plist with updated versions and such; TODO: should
                 # probably automate that with some kind of search/replace instead of copying
