@@ -29,12 +29,18 @@
                   zsh
                   zoxide
                 ]);
-                # Addition of /usr/bin is impure and sad, but allows pbcopy/pbpaste on mac
+                # We are deliberately allowing existing env to leak in by prefixing path
+                # instead of setting it.
                 postFixup =
                   builtins.replaceStrings [ "--prefix LD_LIBRARY_PATH" ] [
-                    "--add-flags --novsync --add-flags --notabs --set NEOVIDE_FRAME buttonless --set NEOVIDE_MULTIGRID true --prefix PATH : ${
-                      super.lib.makeBinPath buildInputs
-                    } --prefix LD_LIBRARY_PATH"
+                    ("--add-flags --notabs " + (if super.stdenv.isDarwin then
+                      "--add-flags --novsync --set NEOVIDE_FRAME buttonless --set NEOVIDE_MULTIGRID true "
+                    else
+                      "") + "--set NEOVIM_BIN ${
+                        pwnvim.packages.${system}.pwnvim + "/bin/neovim"
+                      } --prefix PATH : ${
+                        super.lib.makeBinPath buildInputs
+                      } --prefix LD_LIBRARY_PATH")
                   ] old.postFixup;
                 # Note: need to update Info.plist with updated versions and such; TODO: should
                 # probably automate that with some kind of search/replace instead of copying
