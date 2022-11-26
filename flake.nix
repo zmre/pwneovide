@@ -32,9 +32,9 @@
                 # Addition of /usr/bin is impure and sad, but allows pbcopy/pbpaste on mac
                 postFixup =
                   builtins.replaceStrings [ "--prefix LD_LIBRARY_PATH" ] [
-                    "--set PATH ${
+                    "--add-flags --novsync --add-flags --notabs --set NEOVIDE_FRAME buttonless --set NEOVIDE_MULTIGRID true --prefix PATH : ${
                       super.lib.makeBinPath buildInputs
-                    }:/usr/bin:/bin --add-flags '--novsync --notabs' --set NEOVIDE_FRAME buttonless --set NEOVIDE_MULTIGRID true --prefix LD_LIBRARY_PATH"
+                    } --prefix LD_LIBRARY_PATH"
                   ] old.postFixup;
                 # Note: need to update Info.plist with updated versions and such; TODO: should
                 # probably automate that with some kind of search/replace instead of copying
