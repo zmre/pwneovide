@@ -94,11 +94,11 @@
         "zk-nvim": "zk-nvim"
       },
       "locked": {
-        "lastModified": 1669435270,
-        "narHash": "sha256-QWZ4L9ttFgAPSqu1WNEK2/TAo/23myOoC330f4DVXpo=",
+        "lastModified": 1669443961,
+        "narHash": "sha256-cUCUEVQKM/cdl42xn9zViL3qu1vZLTFXqvgURfT4ef4=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "332c906c81868a6b0fcb5becc68c9066cdceb3a3",
+        "rev": "8608bd661bf3faa37b6dbbd18040276e1ac22fe2",
         "type": "github"
       },
       "original": {
