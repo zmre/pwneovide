@@ -14,9 +14,12 @@ This is only useful for users of nix with flakes enabled, but if you have those 
 
 See pwnvim for some guidance on how to add this version of neovide to your home-manager or nixos configs.
 
+Note: I've hard coded `hasklug nerd font` as the font so you should install `nerdfonts` if you want this to look nice. I didn't specify them as a dependency.
+
 ## TODO
 
 * [ ] Resolve [issue](https://github.com/neovide/neovide/issues/915) with Amethyst and neovide -- figure out how to apply workarounds here
 * [ ] Figure out a way to use "open with" maybe with [applescript](https://github.com/neovide/neovide/issues/1259) workarounds
 * [ ] The app wrapper causes the running app to show without icons and with the name ".neovide-wrapped" instead of "neovide"
 * [ ] There's a lag when launching from a launcher that doesn't happen when launching from CLI -- debug this
+* [ ] Research ways to make flakes modular so options can be toggled on/off

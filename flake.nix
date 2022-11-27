@@ -41,19 +41,24 @@
                       } --prefix PATH : ${
                         super.lib.makeBinPath buildInputs
                       } --prefix LD_LIBRARY_PATH")
-                  ] old.postFixup;
-                # Note: need to update Info.plist with updated versions and such; TODO: should
-                # probably automate that with some kind of search/replace instead of copying
+                  ] old.postFixup + (if super.stdenv.isDarwin then ''
+                    cp $out/bin/.neovide-wrapped $out/Applications/Neovide.app/Contents/MacOS/Neovide
+                  '' else
+                    "");
                 postInstall = (if super.stdenv.isDarwin then ''
                   mkdir -p $out/Applications/Neovide.app/Contents/Resources
                   mkdir -p $out/Applications/Neovide.app/Contents/MacOS
-                  cp ${
+                  substitute ${
                     ./extras/Info.plist
-                  } $out/Applications/Neovide.app/Contents/Info.plist
+                  } $out/Applications/Neovide.app/Contents/Info.plist \
+                    --subst-var-by VERSION ${old.version} \
+                    --subst-var-by NEOVIM_BIN ${
+                      pwnvim.packages.${system}.pwnvim + "/bin/neovim"
+                    } \
+                    --subst-var-by PATH ${super.lib.makeBinPath buildInputs}
                   cp ${
                     ./extras/Neovide.icns
                   } $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
-                  ln -s $out/bin/neovide $out/Applications/Neovide.app/Contents/MacOS/neovide
                 '' else
                   old.postInstall);
               });
@@ -76,5 +81,4 @@
           buildInputs = with pkgs; [ packages.pwneovide ] ++ dependencies;
         };
       });
-
 }

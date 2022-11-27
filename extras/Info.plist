@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleDevelopmentRegion</key>
-  <string>English</string>
+  <string>en</string>
   <key>CFBundleDisplayName</key>
   <string>Neovide</string>
   <key>CFBundleExecutable</key>
-  <string>neovide</string>
+  <string>Neovide</string>
   <key>CFBundleIconFile</key>
   <string>Neovide.icns</string>
   <key>CFBundleIdentifier</key>
@@ -19,9 +19,15 @@
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
-  <string>0.10.0</string>
+  <string>@VERSION@</string>
   <key>CFBundleVersion</key>
   <string>20221116.213550</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>CFBundleSupportedPlatforms</key>
+  <array>
+  <string>MacOSX</string>
+  </array>
   <key>CSResourcesFileMapped</key>
   <true/>
   <key>LSApplicationCategoryType</key>
@@ -34,5 +40,18 @@
   <true/>
   <key>NSHumanReadableCopyright</key>
   <string>Copyright (c) Keith 2021. All rights reserved.</string>
+  <key>LSEnvironment</key>
+  <dict>
+    <key>NEOVIDE_FRAME</key>
+    <string>buttonless</string>
+    <key>NEOVIDE_MULTIGRID</key>
+    <string>true</string>
+    <key>PATH</key>
+    <string>@PATH@:/usr/local/bin:/usr/bin:/bin</string>
+    <key>NEOVIDE_NO_VSYNC</key>
+    <string>true</string>
+    <key>NEOVIM_BIN</key>
+    <string>@NEOVIM_BIN@</string>
+  </dict>
 </dict>
 </plist>
