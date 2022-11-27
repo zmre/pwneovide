@@ -37,7 +37,7 @@
                       "--add-flags --novsync --set NEOVIDE_FRAME buttonless --set NEOVIDE_MULTIGRID true "
                     else
                       "") + "--set NEOVIM_BIN ${
-                        pwnvim.packages.${system}.pwnvim + "/bin/neovim"
+                        pwnvim.packages.${system}.pwnvim + "/bin/nvim"
                       } --prefix PATH : ${
                         super.lib.makeBinPath buildInputs
                       } --prefix LD_LIBRARY_PATH")
