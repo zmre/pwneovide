@@ -13,6 +13,10 @@
   outputs = inputs@{ self, nixpkgs, flake-utils, pwnvim, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        dependencies = [
+          # need to figure out how to handle fonts in a flake...
+          # nerdfonts.override { fonts = [ "FiraCode" "Hasklig" "DroidSansMono" ]; }
+        ];
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
