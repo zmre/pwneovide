@@ -29,6 +29,7 @@
                   fd
                   fzy
                   git
+                  nixfmt
                   ripgrep
                   zsh
                   zoxide
