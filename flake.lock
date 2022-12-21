@@ -93,11 +93,11 @@
         "telescope-media-files": "telescope-media-files"
       },
       "locked": {
-        "lastModified": 1671601479,
-        "narHash": "sha256-Ccw9ggG2mI5HjKwcMGMAllvlTB/Ku2gmR0ywMJ8+AaQ=",
+        "lastModified": 1671602803,
+        "narHash": "sha256-QBB+t4HGwZwVnyJvoBSyC9SSwm4qw5hLUYuYCXpqOdk=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "b4150163fd493c1fab1089c0161e0de2374dd6d9",
+        "rev": "201c15a28256eb0d97107b76dbafa078af74177c",
         "type": "github"
       },
       "original": {
