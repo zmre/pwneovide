@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "clipboard-image": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1668050116,
+        "narHash": "sha256-iXrDb3pSB1NZmvLpSEWwvxOoqyNfR+uXpU9azXQeAVM=",
+        "owner": "ekickx",
+        "repo": "clipboard-image.nvim",
+        "rev": "d1550dc26729b7954f95269952e90471b838fa25",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ekickx",
+        "repo": "clipboard-image.nvim",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -85,6 +101,7 @@
     },
     "pwnvim": {
       "inputs": {
+        "clipboard-image": "clipboard-image",
         "fenix": "fenix",
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
@@ -92,11 +109,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1672894451,
-        "narHash": "sha256-7pAiVMJj/9DbBskhLVG4KPRYi0v+r9p3ygMHodsXX4g=",
+        "lastModified": 1672897096,
+        "narHash": "sha256-rN7iwihTthOzmFI4/1WfClYDcwvUv0Hwoove2+WLNiM=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "f697857776d1f0e21a489176fce23903ce2f6663",
+        "rev": "f591706cf6787fc7279b7058b35fe00cd41eb1da",
         "type": "github"
       },
       "original": {
