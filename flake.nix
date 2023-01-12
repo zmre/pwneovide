@@ -35,17 +35,32 @@
             (self: super: {
               neovide = super.neovide.overrideAttrs (old: rec {
                 nativeBuildInputs = old.nativeBuildInputs ++ [ super.gnused ];
-                buildInputs = old.buildInputs ++ (with super; [
-                  pwnvim.packages.${system}.pwnvim
-                  bat
-                  fd
-                  fzy
-                  git
-                  nixfmt
-                  ripgrep
-                  zsh
-                  zoxide
-                ]);
+                buildInputs = old.buildInputs ++ (with super;
+                  [
+                    pwnvim.packages.${system}.pwnvim
+                    bat
+                    fd
+                    fzy
+                    git
+                    nixfmt
+                    ripgrep
+                    zsh
+                    zoxide
+                  ] ++ super.lib.optionals super.stdenv.isDarwin
+                  (with darwin.apple_sdk.frameworks;
+                    [
+                      /* Security
+                         ApplicationServices
+                         Carbon
+                         OpenGL
+                         CoreGraphics
+                         CoreFoundation
+                         CoreVideo
+                         AppKit
+                         QuartzCore
+                         Foundation
+                      */
+                    ]));
                 # We are deliberately allowing existing env to leak in by prefixing path
                 # instead of setting it.
                 postFixup =
@@ -62,7 +77,7 @@
                     cp $out/bin/.neovide-wrapped $out/Applications/Neovide.app/Contents/MacOS/Neovide
                   '' else
                     "");
-                postInstall = (if super.stdenv.isDarwin then ''
+                postInstall = if super.stdenv.isDarwin then ''
                   mkdir -p $out/Applications/Neovide.app/Contents/Resources
                   mkdir -p $out/Applications/Neovide.app/Contents/MacOS
                   substitute ${
@@ -77,7 +92,7 @@
                     ./extras/Neovide.icns
                   } $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
                 '' else
-                  old.postInstall);
+                  old.postInstall;
               });
             })
 
