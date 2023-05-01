@@ -118,11 +118,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1682965136,
-        "narHash": "sha256-gEAQhTUFnL69kbLpEOfbkkk/MLRLVwuQtCzDESKaftY=",
+        "lastModified": 1682971674,
+        "narHash": "sha256-al3g2TIloqFrIuCjRp5qpe2Fi3au6q48Xm5ItIvzTvI=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "f511f2fcf97be9f9c3c23139cad72543f4c70102",
+        "rev": "8d3b2fcb7d7f710a33848ad3e3738b34ecc5d48a",
         "type": "github"
       },
       "original": {
