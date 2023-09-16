@@ -7,7 +7,7 @@
   <key>CFBundleDisplayName</key>
   <string>Neovide</string>
   <key>CFBundleExecutable</key>
-  <string>Neovide</string>
+  <string>neovide</string>
   <key>CFBundleIconFile</key>
   <string>Neovide.icns</string>
   <key>CFBundleIdentifier</key>
