@@ -259,7 +259,7 @@
   <key>LSEnvironment</key>
   <dict>
     <key>NEOVIDE_FRAME</key>
-    <string>buttonless</string>
+    <string>full</string>
     <key>NEOVIDE_MULTIGRID</key>
     <string>true</string>
     <key>PATH</key>
