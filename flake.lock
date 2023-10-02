@@ -136,11 +136,11 @@
         "vscode-langservers-custom": "vscode-langservers-custom"
       },
       "locked": {
-        "lastModified": 1695933496,
-        "narHash": "sha256-KDicU8b8fX7ivC8koai07fIKjK0LCkofSo9JeH3rbVI=",
+        "lastModified": 1696025259,
+        "narHash": "sha256-/9bwfAIQpeVeRixxU0aniB/smG9ibV7XuQGFKHNKfXA=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "b86c4aa2af4350a8bcc7227e1c1f55e8e56c511b",
+        "rev": "8ea5cf63630173c7e682eaa56d0c40c24cf4f8ae",
         "type": "github"
       },
       "original": {
@@ -182,11 +182,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1695867081,
-        "narHash": "sha256-TP1ocrZSKvfGgpdjw7bUd+jEuF1/OBfuKHvK5EEAhww=",
+        "lastModified": 1695953491,
+        "narHash": "sha256-TO26givgQP4F8rXPu5rgP2K82mJyNN+X491FJYLra2s=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "9d8f850c3de67597c65271f3088aced0a671677f",
+        "rev": "fb948d8eaf5d7c720dec92eb9c75193963fa0c52",
         "type": "github"
       },
       "original": {
