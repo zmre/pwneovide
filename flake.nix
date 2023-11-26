@@ -46,7 +46,21 @@
         overlays = [
           (self: super: {
             neovide = super.neovide.overrideAttrs (old: rec {
-              nativeBuildInputs = old.nativeBuildInputs ++ [super.gnused];
+              # 2023-11-25 I am reverting to clang 11 so skia will build
+              # without this change, I get:
+              #   ld: symbol(s) not found for architecture arm64
+              #   clang-16: error: linker command failed with exit code 1 (use -v to see invocation)
+              # and this seems to be caused by things referenced here:
+              # https://discourse.nixos.org/t/lua-language-server-failed-to-compile/35722
+              # https://bugreports.qt.io/browse/QTBUG-112335
+              # hopefully it will shake out, but for now the clang11 workaround does the trick
+              stdenv = super.clang_11; # this and below
+              nativeBuildInputs =
+                old.nativeBuildInputs
+                ++ [
+                  super.gnused
+                  super.clang_11
+                ];
               buildInputs =
                 old.buildInputs
                 ++ (with super; [
