@@ -81,7 +81,7 @@
                   ("--add-flags --notabs "
                     + (
                       if super.stdenv.isDarwin
-                      then "--add-flags --novsync --set NEOVIDE_FRAME full --set NEOVIDE_MULTIGRID true "
+                      then "--set NEOVIDE_FRAME full "
                       else ""
                     )
                     + "--set NEOVIM_BIN ${
