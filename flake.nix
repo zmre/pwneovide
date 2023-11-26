@@ -19,6 +19,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    flake-compat = {
+      # Needed along with default.nix in root to allow nixd lsp to do completions
+      # See: https://github.com/nix-community/nixd/tree/main/docs/examples/flake
+      url = "github:inclyc/flake-compat";
+      flake = false;
+    };
     pwnvim.url = "github:zmre/pwnvim";
     pwnvim.inputs.nixpkgs.follows = "nixpkgs";
   };
