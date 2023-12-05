@@ -61,19 +61,12 @@
                   super.gnused
                   super.clang_11
                 ];
+              # Need the pwnvim buildinputs here so the various binaries like rg and prettier get into the env for neovide too
               buildInputs =
                 old.buildInputs
-                ++ (with super; [
-                  pwnvim.packages.${system}.pwnvim
-                  bat
-                  fd
-                  fzy
-                  git
-                  nixfmt
-                  ripgrep
-                  zsh
-                  zoxide
-                ]);
+                ++ (with super;
+                  [pwnvim.packages.${system}.pwnvim]
+                  ++ pwnvim.packages.${system}.pwnvim.buildInputs);
               # We are deliberately allowing existing env to leak in by prefixing path
               # instead of setting it.
               postFixup =
