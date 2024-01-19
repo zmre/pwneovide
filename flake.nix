@@ -71,7 +71,7 @@
               # instead of setting it.
               postFixup =
                 builtins.replaceStrings ["--prefix LD_LIBRARY_PATH"] [
-                  ("--add-flags --notabs "
+                  ("--add-flags --no-tabs "
                     + (
                       if super.stdenv.isDarwin
                       then "--set NEOVIDE_FRAME full "
