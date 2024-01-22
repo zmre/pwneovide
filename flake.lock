@@ -170,11 +170,11 @@
         "vscode-langservers-custom": "vscode-langservers-custom"
       },
       "locked": {
-        "lastModified": 1705617134,
-        "narHash": "sha256-CpSm7E4otVQEZXds+8f11sChk5haf9jY6ab0pmYarJs=",
+        "lastModified": 1705956961,
+        "narHash": "sha256-5TlahTQothx6VA2lk5EYDyHALg58hd/5UU6Ewg0Lqxg=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "92f028e29dea082db16ae54e1cfd11c36ffad66f",
+        "rev": "b3d594c55f94d44ade934471cff384590765fdbe",
         "type": "github"
       },
       "original": {

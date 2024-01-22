@@ -62,6 +62,8 @@
                   super.clang_11
                 ];
               # Need the pwnvim buildinputs here so the various binaries like rg and prettier get into the env for neovide too
+              # But this has a major downside: any change to pwnvim now requires rebuilding pwneovide
+              # TODO: can I move pwnvim and pwnvim buildInputs into the path without causing neovide to rebuild on changes to pwnvim?
               buildInputs =
                 old.buildInputs
                 ++ (with super;
