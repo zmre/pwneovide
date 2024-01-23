@@ -37,82 +37,49 @@
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      dependencies = [
-        # need to figure out how to handle fonts in a flake...
-        # nerdfonts.override { fonts = [ "FiraCode" "Hasklig" "DroidSansMono" ]; }
-      ];
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [
-          (self: super: {
-            neovide = super.neovide.overrideAttrs (old: rec {
-              # 2023-11-25 I am reverting to clang 11 so skia will build
-              # without this change, I get:
-              #   ld: symbol(s) not found for architecture arm64
-              #   clang-16: error: linker command failed with exit code 1 (use -v to see invocation)
-              # and this seems to be caused by things referenced here:
-              # https://discourse.nixos.org/t/lua-language-server-failed-to-compile/35722
-              # https://bugreports.qt.io/browse/QTBUG-112335
-              # hopefully it will shake out, but for now the clang11 workaround does the trick
-              stdenv = super.clang_11; # this and below
-              nativeBuildInputs =
-                old.nativeBuildInputs
-                ++ [
-                  super.gnused
-                  super.clang_11
-                ];
-              # Need the pwnvim buildinputs here so the various binaries like rg and prettier get into the env for neovide too
-              # But this has a major downside: any change to pwnvim now requires rebuilding pwneovide
-              # TODO: can I move pwnvim and pwnvim buildInputs into the path without causing neovide to rebuild on changes to pwnvim?
-              buildInputs =
-                old.buildInputs
-                ++ (with super;
-                  [pwnvim.packages.${system}.pwnvim]
-                  ++ pwnvim.packages.${system}.pwnvim.buildInputs);
-              # We are deliberately allowing existing env to leak in by prefixing path
-              # instead of setting it.
-              postFixup =
-                builtins.replaceStrings ["--prefix LD_LIBRARY_PATH"] [
-                  ("--add-flags --no-tabs "
-                    + (
-                      if super.stdenv.isDarwin
-                      then "--set NEOVIDE_FRAME full "
-                      else ""
-                    )
-                    + "--set NEOVIM_BIN ${
-                      pwnvim.packages.${system}.pwnvim + "/bin/nvim"
-                    } --prefix PATH : ${
-                      super.lib.makeBinPath buildInputs
-                    } --prefix LD_LIBRARY_PATH")
-                ]
-                old.postFixup
-                + (
-                  if super.stdenv.isDarwin
-                  then ''
-                    cp $out/bin/.neovide-wrapped $out/Applications/Neovide.app/Contents/MacOS/neovide
-                  ''
-                  else ""
-                );
-              postInstall =
-                if super.stdenv.isDarwin
-                then ''
-                  mkdir -p $out/Applications/Neovide.app/Contents/Resources
-                  mkdir -p $out/Applications/Neovide.app/Contents/MacOS
-                  substitute ${./extras/Info.plist} $out/Applications/Neovide.app/Contents/Info.plist \
-                    --subst-var-by VERSION ${old.version} \
-                    --subst-var-by NEOVIM_BIN ${
-                    pwnvim.packages.${system}.pwnvim + "/bin/nvim"
-                  } \
-                    --subst-var-by PATH ${super.lib.makeBinPath buildInputs}
-                  cp ${./extras/Neovide.icns} $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
-                ''
-                else old.postInstall;
-            });
-          })
-        ];
       };
+      libPath = pkgs.lib.makeLibraryPath [
+        pkgs.libglvnd
+        pkgs.libxkbcommon
+        pkgs.xorg.libXcursor
+        pkgs.xorg.libXext
+        pkgs.xorg.libXrandr
+        pkgs.xorg.libXi
+      ];
+      binPath = pkgs.lib.makeBinPath (pwnvim.packages.${system}.pwnvim.buildInputs ++ pkgs.neovide.buildInputs);
     in rec {
-      packages.pwneovide = pkgs.neovide;
+      packages.pwneovide = pkgs.symlinkJoin {
+        name = "neovide";
+        paths = [pkgs.neovide];
+        buildInputs = [pkgs.makeWrapper];
+        postBuild =
+          ''
+            wrapProgram $out/bin/neovide \
+              --add-flags "--no-tabs"  \
+              --set NEOVIDE_FRAME full  \
+              --set NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
+              --prefix PATH : ${binPath} \
+              --prefix LD_LIBRARY_PATH : ${libPath}
+          ''
+          + (
+            if pkgs.stdenv.isDarwin
+            then ''
+                mkdir -p $out/Applications/Neovide.app/Contents/Resources
+                mkdir -p $out/Applications/Neovide.app/Contents/MacOS
+                substitute ${./extras/Info.plist} $out/Applications/Neovide.app/Contents/Info.plist \
+                  --subst-var-by VERSION ${pkgs.neovide.version} \
+                  --subst-var-by NEOVIM_BIN ${
+                pwnvim.packages.${system}.pwnvim + "/bin/nvim"
+              } \
+                  --subst-var-by PATH ${binPath}
+                cp ${./extras/Neovide.icns} $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
+              cp $out/bin/.neovide-wrapped $out/Applications/Neovide.app/Contents/MacOS/neovide
+            ''
+            else ""
+          );
+      };
 
       apps.pwneovide = flake-utils.lib.mkApp {
         drv = packages.pwneovide;
@@ -122,7 +89,7 @@
       packages.default = packages.pwneovide;
       apps.default = apps.pwneovide;
       devShell = pkgs.mkShell {
-        buildInputs = [packages.pwneovide] ++ dependencies;
+        buildInputs = [packages.pwneovide pwnvim.packages.${system}.pwnvim] ++ pwnvim.packages.${system}.pwnvim.buildInputs ++ pkgs.neovide.buildInputs;
       };
     });
 }
