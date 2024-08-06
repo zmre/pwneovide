@@ -51,12 +51,14 @@
       binPath = pkgs.lib.makeBinPath (pwnvim.packages.${system}.pwnvim.buildInputs ++ pkgs.neovide.buildInputs);
     in rec {
       packages.pwneovide = pkgs.symlinkJoin {
-        name = "neovide";
+        name = "pwneovide";
+        version = "${pkgs.neovide.version}-${pwnvim.packages.${system}.pwnvim.version}";
         paths = [pkgs.neovide];
-        buildInputs = [pkgs.makeWrapper];
-        postBuild =
+        src = ./.;
+        buildInputs = [pkgs.neovide pkgs.makeWrapper];
+        postFixup =
           ''
-            wrapProgram $out/bin/neovide \
+            wrapProgram ${pkgs.neovide}/bin/neovide \
               --add-flags "--no-tabs"  \
               --set NEOVIDE_FRAME full  \
               --set NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
@@ -66,15 +68,15 @@
           + (
             if pkgs.stdenv.isDarwin
             then ''
-                mkdir -p $out/Applications/Neovide.app/Contents/Resources
-                mkdir -p $out/Applications/Neovide.app/Contents/MacOS
-                substitute ${./extras/Info.plist} $out/Applications/Neovide.app/Contents/Info.plist \
-                  --subst-var-by VERSION ${pkgs.neovide.version} \
-                  --subst-var-by NEOVIM_BIN ${
+              mkdir -p $out/Applications/Neovide.app/Contents/Resources
+              mkdir -p $out/Applications/Neovide.app/Contents/MacOS
+              substitute ${./extras/Info.plist} $out/Applications/Neovide.app/Contents/Info.plist \
+                --subst-var-by VERSION ${pkgs.neovide.version} \
+                --subst-var-by NEOVIM_BIN ${
                 pwnvim.packages.${system}.pwnvim + "/bin/nvim"
               } \
-                  --subst-var-by PATH ${binPath}
-                cp ${./extras/Neovide.icns} $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
+                --subst-var-by PATH ${binPath}
+              cp ${./extras/Neovide.icns} $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
               cp $out/bin/.neovide-wrapped $out/Applications/Neovide.app/Contents/MacOS/neovide
             ''
             else ""
