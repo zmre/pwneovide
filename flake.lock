@@ -154,6 +154,23 @@
         "type": "github"
       }
     },
+    "noice-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1721839776,
+        "narHash": "sha256-UgUSvb03sSgAWXOPbXxD1f/KAzRLY07BGHkNOVhwmF4=",
+        "owner": "folke",
+        "repo": "noice.nvim",
+        "rev": "d9328ef903168b6f52385a751eb384ae7e906c6f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "ref": "d9328ef",
+        "repo": "noice.nvim",
+        "type": "github"
+      }
+    },
     "onedarkpro": {
       "flake": false,
       "locked": {
@@ -181,14 +198,15 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "noice-nvim": "noice-nvim",
         "onedarkpro": "onedarkpro"
       },
       "locked": {
-        "lastModified": 1725995276,
-        "narHash": "sha256-3892Cz1gHuyS1/vQjrPoscrSYVlwggq/PivXSrwyFtM=",
+        "lastModified": 1726074055,
+        "narHash": "sha256-dhs7ri3RSAlAmd7iDRcWHknS93honid9FBlVB7m522Q=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "152132a92c48bb853c652baa27792769b35b20d7",
+        "rev": "10e1aa4cb65732c1f9f43454ddf7bfccb1bab7a8",
         "type": "github"
       },
       "original": {
