@@ -33,7 +33,6 @@
     nixpkgs,
     flake-utils,
     pwnvim,
-    rust-overlay,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
@@ -50,34 +49,38 @@
       ];
       binPath = pkgs.lib.makeBinPath (pwnvim.packages.${system}.pwnvim.buildInputs ++ pkgs.neovide.buildInputs);
     in rec {
-      packages.pwneovide = pkgs.symlinkJoin {
+      packages.pwneovide = pkgs.stdenvNoCC.mkDerivation {
+        pname = "pwneovide";
         name = "pwneovide";
         version = "${pkgs.neovide.version}-${pwnvim.packages.${system}.pwnvim.version}";
-        paths = [pkgs.neovide];
         src = ./.;
         buildInputs = [pkgs.neovide pkgs.makeWrapper];
-        postFixup =
+        buildPhase = "";
+        installPhase =
           ''
-            wrapProgram ${pkgs.neovide}/bin/neovide \
+            mkdir -p $out/bin
+            cp ${pkgs.neovide}/bin/.neovide-wrapped $out/bin/pwneovide
+            wrapProgram $out/bin/pwneovide \
               --add-flags "--no-tabs"  \
               --set NEOVIDE_FRAME full  \
               --set NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
               --prefix PATH : ${binPath} \
               --prefix LD_LIBRARY_PATH : ${libPath}
+            if [ -d ${pkgs.neovide}/share ] ; then
+              cp -R ${pkgs.neovide}/share $out/
+            fi
           ''
           + (
             if pkgs.stdenv.isDarwin
             then ''
-              mkdir -p $out/Applications/Neovide.app/Contents/Resources
-              mkdir -p $out/Applications/Neovide.app/Contents/MacOS
-              substitute ${./extras/Info.plist} $out/Applications/Neovide.app/Contents/Info.plist \
+              mkdir -p $out/Applications/PWNeovide.app/Contents/Resources
+              mkdir -p $out/Applications/PWNeovide.app/Contents/MacOS
+              substitute ${./extras/Info.plist} $out/Applications/PWNeovide.app/Contents/Info.plist \
                 --subst-var-by VERSION ${pkgs.neovide.version} \
-                --subst-var-by NEOVIM_BIN ${
-                pwnvim.packages.${system}.pwnvim + "/bin/nvim"
-              } \
+                --subst-var-by NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
                 --subst-var-by PATH ${binPath}
-              cp ${./extras/Neovide.icns} $out/Applications/Neovide.app/Contents/Resources/Neovide.icns
-              cp $out/bin/.neovide-wrapped $out/Applications/Neovide.app/Contents/MacOS/neovide
+              cp ${./extras/Neovide.icns} $out/Applications/PWNeovide.app/Contents/Resources/Neovide.icns
+              cp ${pkgs.neovide}/bin/.neovide-wrapped $out/Applications/PWNeovide.app/Contents/MacOS/neovide
             ''
             else ""
           );
@@ -86,7 +89,7 @@
       apps.pwneovide = flake-utils.lib.mkApp {
         drv = packages.pwneovide;
         name = "pwneovide";
-        exePath = "/bin/neovide";
+        exePath = "/bin/pwneovide";
       };
       packages.default = packages.pwneovide;
       apps.default = apps.pwneovide;
