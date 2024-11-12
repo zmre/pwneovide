@@ -202,11 +202,11 @@
         "onedarkpro": "onedarkpro"
       },
       "locked": {
-        "lastModified": 1731373813,
-        "narHash": "sha256-zgbl7JFAPIDOqzWDLeG2ZT/XayIvKXtF7NTEePXXW9s=",
+        "lastModified": 1731433071,
+        "narHash": "sha256-6EX6vOsACUQ4UnpCgInDyyaZGAK3KL+K3O2GrP1KQEM=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "0cd5518a4ef7dffaa0aef45709da750ca53ddfaf",
+        "rev": "6118445bfb7feeb70b509cdaca52100a55bc5bc1",
         "type": "github"
       },
       "original": {
