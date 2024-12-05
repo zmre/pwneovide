@@ -13,8 +13,8 @@
     ];
   };
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/staging-next"; # temp to get a fix 2024-11-12; should only be needed for another two days or so but I'm impatient
-    # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    #nixpkgs.url = "github:nixos/nixpkgs/staging-next"; # temp to get a fix 2024-11-12; should only be needed for another two days or so but I'm impatient
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
