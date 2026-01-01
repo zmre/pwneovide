@@ -82,6 +82,9 @@
                 --subst-var-by PATH ${binPath}
               cp ${./extras/Neovide.icns} $out/Applications/PWNeovide.app/Contents/Resources/Neovide.icns
               cp ${pkgs.neovide}/bin/.neovide-wrapped $out/Applications/PWNeovide.app/Contents/MacOS/neovide
+              # Ad-hoc code sign the app bundle to avoid launch errors
+              # Uses || true to not fail on systems without codesign (e.g., GitHub CI)
+              codesign --force --deep -s - $out/Applications/PWNeovide.app || true
             ''
             else ""
           );
