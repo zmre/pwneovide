@@ -39,6 +39,45 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {
         inherit system;
+        overlays = [
+          (final: prev: {
+            neovide = prev.neovide.overrideAttrs (old: rec {
+              version = "0.16.0";
+              src = prev.fetchFromGitHub {
+                owner = "neovide";
+                repo = "neovide";
+                tag = version;
+                hash = "sha256-i3HEdYZ1fTK8kHRMhGVY80kE6Sp/HhNV4vG2cVroDWo=";
+              };
+              cargoDeps = prev.rustPlatform.fetchCargoVendor {
+                inherit src;
+                hash = "sha256-ybPKRgUZ2MRbzSFyevxSDtsNyU4iQwL4b7JIqBpbwk4=";
+              };
+              env = old.env // {
+                SKIA_SOURCE_DIR =
+                  let
+                    repo = prev.fetchFromGitHub {
+                      owner = "rust-skia";
+                      repo = "skia";
+                      tag = "m145-0.92.0";
+                      hash = "sha256-9N780AwheKBJRcZC4l/uWFNq+oOyoNp4M6dJAVVAFeo=";
+                    };
+                    externals = prev.linkFarm "skia-externals" (
+                      prev.lib.mapAttrsToList (name: value: {
+                        inherit name;
+                        path = prev.fetchgit value;
+                      }) (prev.lib.importJSON ./extras/skia-externals.json)
+                    );
+                  in
+                  prev.runCommand "source" { } ''
+                    cp -R ${repo} $out
+                    chmod -R +w $out
+                    ln -s ${externals} $out/third_party/externals
+                  '';
+              };
+            });
+          })
+        ];
       };
       libPath = pkgs.lib.makeLibraryPath [
         pkgs.libglvnd
