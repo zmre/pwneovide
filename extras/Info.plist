@@ -11,7 +11,7 @@
   <key>CFBundleIconFile</key>
   <string>Neovide.icns</string>
   <key>CFBundleIdentifier</key>
-  <string>com.neovide.neovide</string>
+  <string>com.zmre.pwneovide</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>

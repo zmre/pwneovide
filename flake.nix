@@ -53,9 +53,10 @@
                 inherit src;
                 hash = "sha256-ybPKRgUZ2MRbzSFyevxSDtsNyU4iQwL4b7JIqBpbwk4=";
               };
-              env = old.env // {
-                SKIA_SOURCE_DIR =
-                  let
+              env =
+                old.env
+                // {
+                  SKIA_SOURCE_DIR = let
                     repo = prev.fetchFromGitHub {
                       owner = "rust-skia";
                       repo = "skia";
@@ -69,12 +70,12 @@
                       }) (prev.lib.importJSON ./extras/skia-externals.json)
                     );
                   in
-                  prev.runCommand "source" { } ''
-                    cp -R ${repo} $out
-                    chmod -R +w $out
-                    ln -s ${externals} $out/third_party/externals
-                  '';
-              };
+                    prev.runCommand "source" {} ''
+                      cp -R ${repo} $out
+                      chmod -R +w $out
+                      ln -s ${externals} $out/third_party/externals
+                    '';
+                };
             });
           })
         ];
@@ -94,7 +95,14 @@
         name = "pwneovide";
         version = "${pkgs.neovide.version}-${pwnvim.packages.${system}.pwnvim.version}";
         src = ./.;
-        buildInputs = [pkgs.neovide pkgs.makeWrapper pkgs.libtool];
+        buildInputs =
+          [pkgs.neovide pkgs.makeWrapper pkgs.libtool]
+          ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+            pkgs.apple-sdk_26
+          ];
+        nativeBuildInputs = pkgs.lib.optionals pkgs.stdenv.isDarwin [
+          pkgs.stdenv.cc
+        ];
         buildPhase = "";
         installPhase =
           ''
@@ -120,10 +128,13 @@
                 --subst-var-by NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
                 --subst-var-by PATH ${binPath}
               cp ${./extras/Neovide.icns} $out/Applications/PWNeovide.app/Contents/Resources/Neovide.icns
-              cp ${pkgs.neovide}/bin/.neovide-wrapped $out/Applications/PWNeovide.app/Contents/MacOS/neovide
-              # Ad-hoc code sign the app bundle to avoid launch errors
-              # Uses || true to not fail on systems without codesign (e.g., GitHub CI)
-              codesign --force --deep -s - $out/Applications/PWNeovide.app || true
+              # Copy neovide as neovide-bin (the actual binary)
+              cp ${pkgs.neovide}/bin/.neovide-wrapped $out/Applications/PWNeovide.app/Contents/MacOS/neovide-bin
+              # Compile a tiny launcher that exec's neovide-bin. When compiled
+              # locally, this gets linker-signed by the compiler, which macOS
+              # AMFI trusts for LaunchServices app launches without requiring
+              # Developer ID signing or notarization.
+              cc -framework Cocoa -o $out/Applications/PWNeovide.app/Contents/MacOS/neovide ${./extras/neovide-launcher.m}
             ''
             else ""
           );
