@@ -107,7 +107,7 @@
         installPhase =
           ''
             mkdir -p $out/bin
-            cp ${pkgs.neovide}/bin/.neovide-wrapped $out/bin/pwneovide
+            cp ${pkgs.neovide}/bin/neovide $out/bin/pwneovide
             wrapProgram $out/bin/pwneovide \
               --add-flags "--no-tabs"  \
               --set NEOVIDE_FRAME full  \
@@ -129,7 +129,7 @@
                 --subst-var-by PATH ${binPath}
               cp ${./extras/Neovide.icns} $out/Applications/PWNeovide.app/Contents/Resources/Neovide.icns
               # Copy neovide as neovide-bin (the actual binary)
-              cp ${pkgs.neovide}/bin/.neovide-wrapped $out/Applications/PWNeovide.app/Contents/MacOS/neovide-bin
+              cp ${pkgs.neovide}/bin/neovide $out/Applications/PWNeovide.app/Contents/MacOS/neovide-bin
               # Compile a tiny launcher that exec's neovide-bin. When compiled
               # locally, this gets linker-signed by the compiler, which macOS
               # AMFI trusts for LaunchServices app launches without requiring
