@@ -134,7 +134,24 @@
               # locally, this gets linker-signed by the compiler, which macOS
               # AMFI trusts for LaunchServices app launches without requiring
               # Developer ID signing or notarization.
-              cc -framework Cocoa -o $out/Applications/PWNeovide.app/Contents/MacOS/neovide ${./extras/neovide-launcher.m}
+              cc -fobjc-arc -framework Cocoa -o $out/Applications/PWNeovide.app/Contents/MacOS/neovide ${./extras/neovide-launcher.m}
+
+              # LaunchServices only rescans a few well-known directories, and
+              # every rebuild lands the bundle at a fresh /nix/store path, so the
+              # document type claims in Info.plist routinely need a manual nudge
+              # before "Open With" picks them up. See README.
+              # LSHandlerRank only governs eligibility and menu order; a default
+              # already recorded for a type outranks it. This claims them.
+              cc -fobjc-arc -framework Foundation -framework CoreServices \
+                -o $out/bin/pwneovide-set-default ${./extras/set-default-handler.m}
+
+              cat > $out/bin/pwneovide-register <<EOF
+              #!/bin/sh
+              set -eu
+              exec /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
+                -f -R -trusted "$out/Applications/PWNeovide.app"
+              EOF
+              chmod +x $out/bin/pwneovide-register
             ''
             else ""
           );

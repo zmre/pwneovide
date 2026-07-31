@@ -21,239 +21,447 @@
   <key>CFBundleShortVersionString</key>
   <string>@VERSION@</string>
   <key>CFBundleVersion</key>
-  <string>20221116.213550</string>
+  <string>@VERSION@</string>
   <key>CFBundleSignature</key>
   <string>????</string>
   <key>CFBundleSupportedPlatforms</key>
   <array>
-  <string>MacOSX</string>
+    <string>MacOSX</string>
   </array>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>config</string>
-				<string>editorconfig</string>
-				<string>ini</string>
-				<string>cfg</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Configuration file</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>css</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>CSS</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>htm</string>
-				<string>html</string>
-				<string>xhtml</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>HTML document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>js</string>
-				<string>jscsrc</string>
-				<string>jshintrc</string>
-				<string>mjs</string>
-				<string>cjs</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Javascript file</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>json</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>JSON document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>markdown</string>
-				<string>md</string>
-				<string>mdoc</string>
-				<string>mdown</string>
-				<string>mdtext</string>
-				<string>mdtxt</string>
-				<string>mdwn</string>
-				<string>mkd</string>
-				<string>mkdn</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Markdown document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>ts</string>
-				<string>svelte</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>TypeScript file</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>tsx</string>
-				<string>jsx</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>React source code</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>ascx</string>
-				<string>csproj</string>
-				<string>dtd</string>
-				<string>plist</string>
-				<string>wxi</string>
-				<string>wxl</string>
-				<string>wxs</string>
-				<string>xml</string>
-				<string>xaml</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>XML document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>eyaml</string>
-				<string>eyml</string>
-				<string>yaml</string>
-				<string>yml</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>YAML document</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>TEXT</string>
-				<string>utxt</string>
-				<string>TUTX</string>
-				<string>****</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
+  <key>NSPrincipalClass</key>
+  <string>NSApplication</string>
+
+  <!--
+    Document type claims.
+
+    LaunchServices on modern macOS matches on Uniform Type Identifiers
+    (LSItemContentTypes), not the long-deprecated CFBundleTypeExtensions /
+    CFBundleTypeOSTypes pair. A document of type X offers this app when X
+    *conforms to* a UTI listed below, so claiming a parent type covers every
+    descendant. Relevant parts of the tree:
+
+      public.item
+        public.content
+        public.data
+          public.text
+            public.plain-text     <- .txt, and parent of public.source-code
+              public.source-code  <- .rs .lua .py .sh ... (and public.script)
+              net.daringfireball.markdown
+            public.json, public.xml, public.yaml, public.html  (siblings of
+                                                                plain-text)
+        public.directory
+          public.folder
+
+    So "public.plain-text" at Owner rank sweeps up plain text, all source code
+    and Markdown, while deliberately *not* capturing public.html — an editor
+    stealing the double-click default for .html from the browser is hostile.
+    HTML/XML stay Alternate: offered in "Open With", never promoted.
+
+    LSHandlerRank: Owner > Default > Alternate. All three appear in the
+    "Open With" submenu; only rank decides who wins the default. To demote any
+    entry later, change its Owner to Alternate and re-register (see README).
+  -->
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <!--
+        Markdown gets its own entry, listed first: LaunchServices walks this
+        array in order and uses the first dict whose types match, so the primary
+        claim should not be buried in a general-purpose bucket. Paired with the
+        *exported* declaration below, this is the strongest claim the format
+        allows. CFBundleTypeIconFile makes .md files carry the Neovide icon in
+        Finder, which is the visible half of owning a type.
+      -->
+      <key>CFBundleTypeName</key>
+      <string>Markdown document</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>Neovide.icns</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>net.daringfireball.markdown</string>
+      </array>
+    </dict>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>Plain text document</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.plain-text</string>
+        <string>public.utf8-plain-text</string>
+        <string>public.utf16-plain-text</string>
+        <string>public.utf16-external-plain-text</string>
+        <string>public.log</string>
+        <string>org.ledger-cli.journal</string>
+        <string>io.mermaid.diagram</string>
+        <string>org.asciidoc.document</string>
+        <string>org.restructuredtext.document</string>
+        <string>org.orgmode.document</string>
+        <string>app.typst.source</string>
+        <string>com.zmre.pwneovide.text</string>
+      </array>
+    </dict>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>Source code</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.source-code</string>
+        <string>public.script</string>
+        <string>public.shell-script</string>
+        <string>public.json</string>
+        <string>public.yaml</string>
+        <string>org.tomlang.toml</string>
+        <string>org.nixos.nix</string>
+        <string>public.comma-separated-values-text</string>
+        <string>public.tab-separated-values-text</string>
+        <string>public.delimited-values-text</string>
+      </array>
+    </dict>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>Markup and structured document</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Alternate</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.html</string>
+        <string>public.xhtml</string>
+        <string>public.xml</string>
+        <string>public.svg-image</string>
+        <string>com.apple.property-list</string>
+        <string>com.apple.xml-property-list</string>
+      </array>
+    </dict>
+    <dict>
+      <!--
+        Catch-all. Nearly every regular file conforms to public.data, including
+        the synthetic "dyn.*" identifiers macOS invents for extensions no
+        installed app has ever declared. This is what puts PWNeovide in the
+        "Open With" submenu for arbitrary and extensionless files. Alternate
+        rank, so it is only ever an option, never an automatic default.
+      -->
+      <key>CFBundleTypeName</key>
+      <string>Any file</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Alternate</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.data</string>
+        <string>public.content</string>
+      </array>
+    </dict>
+    <dict>
+      <!-- Neovim opens a directory fine (netrw/oil), so offer it for folders. -->
+      <key>CFBundleTypeName</key>
+      <string>Folder</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Alternate</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.folder</string>
+      </array>
+    </dict>
   </array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>CFBundleURLName</key>
-			<string>Neovide</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>neovide</string>
-			</array>
-		</dict>
-	</array>
+
+  <!--
+    Type declarations.
+
+    An extension no installed app declares gets a throwaway "dyn.*" UTI that
+    conforms only to public.data — enough for the catch-all above to offer the
+    app, but not enough for it to ever be the default. Declaring these teaches
+    LaunchServices that .journal, .mermaid, .md and friends are plain text,
+    which is what promotes them into the Owner-rank claim.
+
+    Imported = types someone else owns that we merely recognise. Exported =
+    types we define ourselves.
+  -->
+  <key>UTImportedTypeDeclarations</key>
+  <array>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.ledger-cli.journal</string>
+      <key>UTTypeDescription</key>
+      <string>Plain text accounting journal</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>journal</string>
+          <string>ledger</string>
+          <string>hledger</string>
+          <string>beancount</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>io.mermaid.diagram</string>
+      <key>UTTypeDescription</key>
+      <string>Mermaid diagram</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>mermaid</string>
+          <string>mmd</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.tomlang.toml</string>
+      <key>UTTypeDescription</key>
+      <string>TOML document</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>toml</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.nixos.nix</string>
+      <key>UTTypeDescription</key>
+      <string>Nix expression</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.source-code</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>nix</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.asciidoc.document</string>
+      <key>UTTypeDescription</key>
+      <string>AsciiDoc document</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>adoc</string>
+          <string>asciidoc</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.restructuredtext.document</string>
+      <key>UTTypeDescription</key>
+      <string>reStructuredText document</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>rst</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.orgmode.document</string>
+      <key>UTTypeDescription</key>
+      <string>Org mode document</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>org</string>
+          <string>norg</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>app.typst.source</string>
+      <key>UTTypeDescription</key>
+      <string>Typst document</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>typ</string>
+        </array>
+      </dict>
+    </dict>
+  </array>
+
+  <!--
+    A single bucket for the long tail of config/dotfile/data extensions that no
+    vendor has ever bothered to declare a UTI for. Add extensions here rather
+    than inventing a new declaration per format.
+  -->
+  <key>UTExportedTypeDeclarations</key>
+  <array>
+    <dict>
+      <!--
+        Exported rather than imported. macOS ships no Markdown UTI of its own
+        (CoreTypes.bundle declares none, and UTCoreTypes.h has no constant for
+        it), so net.daringfireball.markdown exists only because apps declare it.
+        With no system declaration to defer to, exporting makes this bundle's
+        definition authoritative: an exported declaration outranks the imported
+        declarations other editors ship, so our extension list and conformance
+        win when LaunchServices resolves the type.
+      -->
+      <key>UTTypeIdentifier</key>
+      <string>net.daringfireball.markdown</string>
+      <key>UTTypeDescription</key>
+      <string>Markdown document</string>
+      <key>UTTypeReferenceURL</key>
+      <string>https://daringfireball.net/projects/markdown/</string>
+      <key>UTTypeIconFile</key>
+      <string>Neovide.icns</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>md</string>
+          <string>markdown</string>
+          <string>mdown</string>
+          <string>mkd</string>
+          <string>mkdn</string>
+          <string>mdwn</string>
+          <string>mdtext</string>
+          <string>mdtxt</string>
+          <string>mdoc</string>
+          <string>qmd</string>
+          <string>rmd</string>
+        </array>
+        <key>public.mime-type</key>
+        <array>
+          <string>text/markdown</string>
+          <string>text/x-markdown</string>
+        </array>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>com.zmre.pwneovide.text</string>
+      <key>UTTypeDescription</key>
+      <string>Plain text document</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.plain-text</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>conf</string>
+          <string>config</string>
+          <string>cfg</string>
+          <string>ini</string>
+          <string>properties</string>
+          <string>editorconfig</string>
+          <string>envrc</string>
+          <string>gitconfig</string>
+          <string>gitignore</string>
+          <string>gitattributes</string>
+          <string>dockerignore</string>
+          <string>npmrc</string>
+          <string>nvmrc</string>
+          <string>eyaml</string>
+          <string>eyml</string>
+          <string>lock</string>
+          <string>diff</string>
+          <string>patch</string>
+          <string>sum</string>
+          <string>tf</string>
+          <string>tfvars</string>
+          <string>hcl</string>
+          <string>ndjson</string>
+          <string>jsonl</string>
+          <string>todo</string>
+          <string>notes</string>
+          <string>text</string>
+        </array>
+      </dict>
+    </dict>
+  </array>
+
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+      <key>CFBundleURLName</key>
+      <string>Neovide</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>neovide</string>
+      </array>
+    </dict>
+  </array>
   <key>CSResourcesFileMapped</key>
   <true/>
   <key>LSApplicationCategoryType</key>
-  <string>public.app-category.productivity</string>
+  <string>public.app-category.developer-tools</string>
   <key>LSMinimumSystemVersion</key>
-  <string>10.11</string>
-  <key>LSRequiresCarbon</key>
-  <true/>
+  <string>11.0</string>
   <key>NSHighResolutionCapable</key>
   <true/>
+  <!-- An editor with unsaved buffers must never be killed silently. -->
+  <key>NSSupportsSuddenTermination</key>
+  <false/>
+  <key>NSSupportsAutomaticTermination</key>
+  <false/>
   <key>NSHumanReadableCopyright</key>
   <string>Copyright (c) Keith 2021. All rights reserved.</string>
   <key>LSEnvironment</key>
