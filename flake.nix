@@ -144,7 +144,6 @@
             mkdir -p $out/bin
             cp ${pkgs.neovide}/bin/neovide $out/bin/pwneovide
             wrapProgram $out/bin/pwneovide \
-              --add-flags "--no-tabs"  \
               --set NEOVIDE_FRAME ${neovideFrame}  \
               --set NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
               --prefix PATH : ${binPath} \
