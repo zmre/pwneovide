@@ -467,7 +467,7 @@
   <key>LSEnvironment</key>
   <dict>
     <key>NEOVIDE_FRAME</key>
-    <string>full</string>
+    <string>@NEOVIDE_FRAME@</string>
     <key>NEOVIDE_MULTIGRID</key>
     <string>true</string>
     <key>PATH</key>

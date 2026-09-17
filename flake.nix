@@ -37,46 +37,72 @@
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
+      # Upstream neovide releases land well before nixpkgs catches up, so
+      # extras/neovide-pin.json records the newest upstream release together
+      # with the hashes needed to build it. ./update.sh maintains that file.
+      #
+      # The pin is only *applied* while it is genuinely newer than the neovide
+      # nixpkgs ships. Once nixpkgs catches up we go back to taking theirs, which
+      # means their skia bookkeeping comes along for free and a forgotten pin can
+      # never silently hold us at an older release.
+      # Set "version" to null to disable pinning entirely.
+      neovidePin = builtins.fromJSON (builtins.readFile ./extras/neovide-pin.json);
+
       pkgs = import nixpkgs {
         inherit system;
         overlays = [
+          # Note the shape: the attribute is defined unconditionally and only its
+          # *value* branches. Deciding whether to define `neovide` at all would
+          # make the overlay's attribute names depend on a package value, which
+          # is infinite recursion.
           (final: prev: {
-            neovide = prev.neovide.overrideAttrs (old: rec {
-              version = "0.16.0";
-              src = prev.fetchFromGitHub {
-                owner = "neovide";
-                repo = "neovide";
-                tag = version;
-                hash = "sha256-i3HEdYZ1fTK8kHRMhGVY80kE6Sp/HhNV4vG2cVroDWo=";
-              };
-              cargoDeps = prev.rustPlatform.fetchCargoVendor {
-                inherit src;
-                hash = "sha256-ybPKRgUZ2MRbzSFyevxSDtsNyU4iQwL4b7JIqBpbwk4=";
-              };
-              env =
-                old.env
-                // {
-                  SKIA_SOURCE_DIR = let
-                    repo = prev.fetchFromGitHub {
-                      owner = "rust-skia";
-                      repo = "skia";
-                      tag = "m145-0.92.0";
-                      hash = "sha256-9N780AwheKBJRcZC4l/uWFNq+oOyoNp4M6dJAVVAFeo=";
+            neovide =
+              if
+                neovidePin.version
+                == null
+                || !(prev.lib.versionOlder prev.neovide.version neovidePin.version)
+              then prev.neovide
+              else
+                prev.neovide.overrideAttrs (old: rec {
+                  version = neovidePin.version;
+                  src = prev.fetchFromGitHub {
+                    owner = "neovide";
+                    repo = "neovide";
+                    tag = version;
+                    hash = neovidePin.srcHash;
+                  };
+                  cargoDeps = prev.rustPlatform.fetchCargoVendor {
+                    inherit src;
+                    hash = neovidePin.cargoHash;
+                  };
+                  # Rebuilt rather than inherited from nixpkgs because a newer
+                  # neovide may want a newer skia than nixpkgs has wired up. The
+                  # tag is whatever skia-bindings asks for; if it moves, the
+                  # externals below have to be regenerated from that skia's DEPS.
+                  env =
+                    old.env
+                    // {
+                      SKIA_SOURCE_DIR = let
+                        repo = prev.fetchFromGitHub {
+                          owner = "rust-skia";
+                          repo = "skia";
+                          tag = neovidePin.skia.tag;
+                          hash = neovidePin.skia.hash;
+                        };
+                        externals = prev.linkFarm "skia-externals" (
+                          prev.lib.mapAttrsToList (name: value: {
+                            inherit name;
+                            path = prev.fetchgit value;
+                          }) (prev.lib.importJSON ./extras/skia-externals.json)
+                        );
+                      in
+                        prev.runCommand "source" {} ''
+                          cp -R ${repo} $out
+                          chmod -R +w $out
+                          ln -s ${externals} $out/third_party/externals
+                        '';
                     };
-                    externals = prev.linkFarm "skia-externals" (
-                      prev.lib.mapAttrsToList (name: value: {
-                        inherit name;
-                        path = prev.fetchgit value;
-                      }) (prev.lib.importJSON ./extras/skia-externals.json)
-                    );
-                  in
-                    prev.runCommand "source" {} ''
-                      cp -R ${repo} $out
-                      chmod -R +w $out
-                      ln -s ${externals} $out/third_party/externals
-                    '';
-                };
-            });
+                });
           })
         ];
       };
@@ -89,6 +115,15 @@
         pkgs.xorg.libXi
       ];
       binPath = pkgs.lib.makeBinPath (pwnvim.packages.${system}.pwnvim.buildInputs ++ pkgs.neovide.buildInputs);
+      # Window decorations. macOS gets the transparent titlebar, which keeps the
+      # traffic lights floating over the editor surface; it is a macOS-only mode,
+      # so everywhere else keeps the full frame. Defined once here and threaded
+      # into both the CLI wrapper and the app bundle's LSEnvironment, so the two
+      # launch paths cannot drift apart.
+      neovideFrame =
+        if pkgs.stdenv.isDarwin
+        then "transparent"
+        else "full";
     in rec {
       packages.pwneovide = pkgs.stdenvNoCC.mkDerivation {
         pname = "pwneovide";
@@ -110,7 +145,7 @@
             cp ${pkgs.neovide}/bin/neovide $out/bin/pwneovide
             wrapProgram $out/bin/pwneovide \
               --add-flags "--no-tabs"  \
-              --set NEOVIDE_FRAME full  \
+              --set NEOVIDE_FRAME ${neovideFrame}  \
               --set NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
               --prefix PATH : ${binPath} \
               --prefix LD_LIBRARY_PATH : ${libPath}
@@ -125,16 +160,30 @@
               mkdir -p $out/Applications/PWNeovide.app/Contents/MacOS
               substitute ${./extras/Info.plist} $out/Applications/PWNeovide.app/Contents/Info.plist \
                 --subst-var-by VERSION ${pkgs.neovide.version} \
+                --subst-var-by NEOVIDE_FRAME ${neovideFrame} \
                 --subst-var-by NEOVIM_BIN ${pwnvim.packages.${system}.pwnvim + "/bin/nvim"} \
                 --subst-var-by PATH ${binPath}
               cp ${./extras/Neovide.icns} $out/Applications/PWNeovide.app/Contents/Resources/Neovide.icns
-              # Copy neovide as neovide-bin (the actual binary)
-              cp ${pkgs.neovide}/bin/neovide $out/Applications/PWNeovide.app/Contents/MacOS/neovide-bin
-              # Compile a tiny launcher that exec's neovide-bin. When compiled
-              # locally, this gets linker-signed by the compiler, which macOS
-              # AMFI trusts for LaunchServices app launches without requiring
-              # Developer ID signing or notarization.
-              cc -fobjc-arc -framework Cocoa -o $out/Applications/PWNeovide.app/Contents/MacOS/neovide ${./extras/neovide-launcher.m}
+
+              # The real binary must *be* CFBundleExecutable. Do not reintroduce
+              # a launcher stub that exec's a sibling: LaunchServices invalidates
+              # the ASN->PID binding across execve, after which NSWorkspace
+              # reports the app with processIdentifier -1 forever. Every
+              # Accessibility-API tool resolves windows by pid, so aerospace,
+              # alt-tab and Amethyst all go blind to the window while the app
+              # otherwise looks and behaves normally. It is the exec itself that
+              # does this, not the binary being different -- exec'ing the very
+              # same path breaks it too, and doing it earlier in main() does not
+              # help. Neovide implements application:openFiles: itself, so the
+              # kAEOpenDocuments event the stub used to intercept is delivered
+              # straight to it.
+              #
+              # nix links this binary ad-hoc ("linker-signed"), which is the
+              # signature flavour AMFI trusts for LaunchServices launches. Do not
+              # run `codesign --force --deep -s -` over it: that replaces the
+              # linker signature with a plain ad-hoc one and the app stops
+              # launching.
+              cp ${pkgs.neovide}/bin/neovide $out/Applications/PWNeovide.app/Contents/MacOS/neovide
 
               # LaunchServices only rescans a few well-known directories, and
               # every rebuild lands the bundle at a fresh /nix/store path, so the
@@ -166,6 +215,24 @@
       apps.default = apps.pwneovide;
       devShell = pkgs.mkShell {
         buildInputs = [packages.pwneovide pwnvim.packages.${system}.pwnvim] ++ pwnvim.packages.${system}.pwnvim.buildInputs ++ pkgs.neovide.buildInputs;
+      };
+      devShells.default = devShell;
+      # Tooling for ./update.sh, which re-execs itself into this shell so it
+      # never depends on what happens to be installed globally. The text tools
+      # are listed on purpose: macOS ships BSD sed/awk, and grep here is shadowed
+      # by ugrep -- both differ from what the script is written against.
+      devShells.update = pkgs.mkShell {
+        buildInputs = [
+          pkgs.cachix
+          pkgs.cacert
+          pkgs.coreutils
+          pkgs.curl
+          pkgs.gawk
+          pkgs.git
+          pkgs.gnugrep
+          pkgs.gnused
+          pkgs.jq
+        ];
       };
     });
 }

@@ -1,0 +1,9 @@
+{
+  "version": "0.16.2",
+  "srcHash": "sha256-mzlyw9NIBb35QJ5L7+ZxgJ5IUoHznAUQOLA0SglJ3bw=",
+  "cargoHash": "sha256-WVNmG+KJK93yLrL2/KPc2czAxwt5brKxRkrPB7Bv46M=",
+  "skia": {
+    "tag": "m145-0.92.0",
+    "hash": "sha256-9N780AwheKBJRcZC4l/uWFNq+oOyoNp4M6dJAVVAFeo="
+  }
+}
