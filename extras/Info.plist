@@ -106,6 +106,11 @@
         <string>org.orgmode.document</string>
         <string>app.typst.source</string>
         <string>com.zmre.pwneovide.text</string>
+        <!--
+          macOS declares .vtt itself, conforming to public.text rather than
+          public.plain-text, so the plain-text claim above does not reach it.
+        -->
+        <string>org.w3.webvtt</string>
       </array>
     </dict>
     <dict>

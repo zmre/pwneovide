@@ -33,6 +33,7 @@ static NSArray<NSString *> *DefaultContentTypes(void) {
         @"org.orgmode.document",
         @"app.typst.source",
         @"com.zmre.pwneovide.text",
+        @"org.w3.webvtt",
         @"public.source-code",
         @"public.script",
         @"public.shell-script",
