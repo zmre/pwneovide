@@ -21,13 +21,13 @@
       "locked": {
         "lastModified": 1754286081,
         "narHash": "sha256-4grne/LEBHoJNHtM3xb+mtu5Abr6Lj1nft0ccowZASU=",
-        "owner": "postfen",
+        "owner": "dfendr",
         "repo": "clipboard-image.nvim",
         "rev": "5ccecdf27a02b1bf0a2602cf143bcf69f1ca4465",
         "type": "github"
       },
       "original": {
-        "owner": "postfen",
+        "owner": "dfendr",
         "repo": "clipboard-image.nvim",
         "type": "github"
       }
@@ -227,11 +227,11 @@
         "todo-comments-nvim": "todo-comments-nvim"
       },
       "locked": {
-        "lastModified": 1793811866,
-        "narHash": "sha256-NEB14LvEbbm2/HomFAYqXGg8FRlOo7rIg52grIjmToo=",
+        "lastModified": 1793854624,
+        "narHash": "sha256-lXIIyxiiyC6estoZ3gs4EpI1Y9F1fxQ0zZ/fqch1scs=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "7ac8b202bd980521b1715e3dbff101e44b282264",
+        "rev": "9954705ab723398ae52aabc19acfe8409a1cb165",
         "type": "github"
       },
       "original": {
