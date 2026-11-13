@@ -227,11 +227,11 @@
         "todo-comments-nvim": "todo-comments-nvim"
       },
       "locked": {
-        "lastModified": 1794541457,
-        "narHash": "sha256-LHgshVDKOoalCpi1wYq0rWbQAb8Z6tSdTeZUkjkYQ80=",
+        "lastModified": 1794547923,
+        "narHash": "sha256-GTIm32m2ZXJQcWZdNwoP/HPmRmxdGPs5F4DGby8rG10=",
         "owner": "zmre",
         "repo": "pwnvim",
-        "rev": "570085a59faadf6c0a5b3ac27ec3f541199b7daf",
+        "rev": "cd9d81684a6b07417343586bc902792820d35ba6",
         "type": "github"
       },
       "original": {
