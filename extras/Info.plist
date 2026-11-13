@@ -99,7 +99,6 @@
         <string>public.utf16-plain-text</string>
         <string>public.utf16-external-plain-text</string>
         <string>public.log</string>
-        <string>org.ledger-cli.journal</string>
         <string>io.mermaid.diagram</string>
         <string>org.asciidoc.document</string>
         <string>org.restructuredtext.document</string>
@@ -132,6 +131,24 @@
         <string>public.comma-separated-values-text</string>
         <string>public.tab-separated-values-text</string>
         <string>public.delimited-values-text</string>
+      </array>
+    </dict>
+    <dict>
+      <!--
+        Offered for ledger/hledger/beancount journals, but never the default:
+        those usually belong to a dedicated accounting app. The type declaration
+        below conforms to public.text rather than public.plain-text so the
+        Owner-rank plain-text claim above does not reach it.
+      -->
+      <key>CFBundleTypeName</key>
+      <string>Plain text accounting journal</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Alternate</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>org.ledger-cli.journal</string>
       </array>
     </dict>
     <dict>
@@ -192,8 +209,8 @@
     An extension no installed app declares gets a throwaway "dyn.*" UTI that
     conforms only to public.data — enough for the catch-all above to offer the
     app, but not enough for it to ever be the default. Declaring these teaches
-    LaunchServices that .journal, .mermaid, .md and friends are plain text,
-    which is what promotes them into the Owner-rank claim.
+    LaunchServices that .mermaid, .md and friends are plain text, which is
+    what promotes them into the Owner-rank claim.
 
     Imported = types someone else owns that we merely recognise. Exported =
     types we define ourselves.
@@ -207,7 +224,8 @@
       <string>Plain text accounting journal</string>
       <key>UTTypeConformsTo</key>
       <array>
-        <string>public.plain-text</string>
+        <!-- public.text, not public.plain-text: keeps it Alternate-only. -->
+        <string>public.text</string>
       </array>
       <key>UTTypeTagSpecification</key>
       <dict>
